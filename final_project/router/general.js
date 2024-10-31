@@ -43,16 +43,23 @@ public_users.get("/", function (req, res) {
 
 // Get book details based on ISBN
 public_users.get("/isbn/:isbn", function (req, res) {
-  if (!!books) {
-    const isbn = req.params.isbn;
-    if (books[isbn]) {
-      return res.status(200).json(books[isbn]);
+  new Promise((resolve, reject) => {
+    if (!!books) {
+      const isbn = req.params.isbn;
+      if (books[isbn]) {
+        resolve(books[isbn]);
+      }
+      reject("No book found for given ISBN");
+    } else {
+      reject("Error: unable to get books list");
     }
-    return res.status(200).json({ message: "No book found for given ISBN" });
-  }
-  return res
-    .status(404)
-    .json({ message: "Error: unable to access books list" });
+  })
+    .then((matchedBook) => {
+      res.status(200).json(matchedBook);
+    })
+    .catch((error) => {
+      res.status(404).json({ message: error });
+    });
 });
 
 // Get book details based on author
