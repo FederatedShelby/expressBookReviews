@@ -47,24 +47,59 @@ regd_users.post("/login", (req, res) => {
 });
 
 // Add a book review
-regd_users.put("/auth/review/:isbn", (req, res) => {  
+regd_users.put("/auth/review/:isbn", (req, res) => {
   if (!!books) {
     const isbn = req.params.isbn;
     const matchedBook = books[isbn];
-    
+
     if (!!matchedBook) {
       const reviews = matchedBook.reviews;
       const username = req.session.authorization.username;
       try {
         reviews[username] = req.query.review;
-        return res.status(200).json({ message: `The review for the book with ISBN ${isbn} has been added/updated`})
+        return res
+          .status(200)
+          .json({
+            message: `The review for the book with ISBN ${isbn} has been added/updated`,
+          });
       } catch (e) {
-        return res.status(404).json({ message: "Error: new review not posted"})
+        return res
+          .status(404)
+          .json({ message: "Error: new review not posted" });
       }
     }
     return res.status(200).json({ message: "No book found for given ISBN" });
   }
-  return res.status(404).json({ message: "Error: unable to access books list" });
+  return res
+    .status(404)
+    .json({ message: "Error: unable to access books list" });
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  if (!!books) {
+    const isbn = req.params.isbn;
+    const matchedBook = books[isbn];
+
+    if (!!matchedBook) {
+      const reviews = matchedBook.reviews;
+      const username = req.session.authorization.username;
+      try {
+        delete reviews[username];
+        return res
+          .status(200)
+          .json({
+            message: `The review for the book with ISBN ${isbn} has been deleted`,
+          });
+      } catch (e) {
+        return res.status(404).json({ message: "Error: review not deleted" });
+      }
+    }
+    return res.status(200).json({ message: "No book found for given ISBN" });
+  }
+  return res
+    .status(404)
+    .json({ message: "Error: unable to access books list" });
 });
 
 module.exports.authenticated = regd_users;
