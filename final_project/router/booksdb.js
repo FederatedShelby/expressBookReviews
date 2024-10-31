@@ -16,16 +16,7 @@ let books = {
     author: "Samuel Beckett",
     title: "Molloy, Malone Dies, The Unnamable, the trilogy",
     reviews: {
-      user2: [
-        {
-          id: 1,
-          review: "Started reading this and it's not bad so far",
-        },
-        {
-          id: 3,
-          review: "10/10 Best book I've read all week",
-        },
-      ],
+      user2: "Started reading this and it's not bad so far",
     },
   },
 };
