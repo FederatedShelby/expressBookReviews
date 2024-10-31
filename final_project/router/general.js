@@ -46,15 +46,29 @@ public_users.get("/isbn/:isbn", function (req, res) {
     if (books[isbn]) {
       return res.status(200).json(books[isbn]);
     }
-    return res.status(200).json({ message: 'No book found for given ISBN' });
+    return res.status(200).json({ message: "No book found for given ISBN" });
   }
-  return res.status(404).json({ message: "Error: unable to access books list"});
+  return res
+    .status(404)
+    .json({ message: "Error: unable to access books list" });
 });
 
 // Get book details based on author
+// NOTE: multiple books can be written by same author
 public_users.get("/author/:author", function (req, res) {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  if (!!books) {
+    const author = req.params.author;
+    const booksList = Object.values(books);
+    const matchedBooks = booksList.filter((book) => book.author === author);
+
+    if (matchedBooks.length > 0) {
+      return res.status(200).json({ matchedBooks });
+    }
+    return res.status(200).json({ message: "No book found for given author" });
+  }
+  return res
+    .status(404)
+    .json({ message: "Error: unable to access books list" });
 });
 
 // Get all books based on title
