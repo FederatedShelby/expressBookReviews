@@ -65,19 +65,25 @@ public_users.get("/isbn/:isbn", function (req, res) {
 // Get book details based on author
 // NOTE: multiple books can be written by same author
 public_users.get("/author/:author", function (req, res) {
-  if (!!books) {
-    const author = req.params.author;
-    const booksList = Object.values(books);
-    const matchedBooks = booksList.filter((book) => book.author === author);
+  new Promise((resolve, reject) => {
+    if (!!books) {
+      const author = req.params.author;
+      const booksList = Object.values(books);
+      const matchedBooks = booksList.filter((book) => book.author === author);
 
-    if (matchedBooks.length > 0) {
-      return res.status(200).json({ matchedBooks });
+      if (matchedBooks.length > 0) {
+        resolve(matchedBooks);
+      }
+      reject("No book found for given author");
     }
-    return res.status(200).json({ message: "No book found for given author" });
-  }
-  return res
-    .status(404)
-    .json({ message: "Error: unable to access books list" });
+    reject("Error: unable to access books list");
+  })
+    .then((matchedBooks) => {
+      res.status(200).json(matchedBooks);
+    })
+    .catch((error) => {
+      res.status(404).json({ message: error });
+    });
 });
 
 // Get all books based on title
