@@ -36,7 +36,7 @@ public_users.get("/", function (req, res) {
   if (!!books) {
     return res.status(200).json(books);
   }
-  return res.status(404).json({ message: "Error: unable to register user" });
+  return res.status(404).json({ message: "Error: unable to get books list" });
 });
 
 // Get book details based on ISBN
