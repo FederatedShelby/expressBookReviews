@@ -26,10 +26,19 @@ public_users.post("/register", (req, res) => {
 
 // Get the book list available in the shop
 public_users.get("/", function (req, res) {
-  if (!!books) {
-    return res.status(200).json(books);
-  }
-  return res.status(404).json({ message: "Error: unable to get books list" });
+  new Promise((resolve, reject) => {
+    if (!!books) {
+      resolve(books);
+    } else {
+      reject("Error: unable to get books list");
+    }
+  })
+    .then((bookList) => {
+      res.status(200).json(bookList);
+    })
+    .catch((error) => {
+      res.status(404).json({ message: error });
+    });
 });
 
 // Get book details based on ISBN
